@@ -1003,7 +1003,7 @@ public class JFacturacion  extends JInternalFrame{
        try{ 
             String Codigo = JOptionPane.showInputDialog("Codigo de Autorizacion: ");
             if(!Codigo.trim().equals("")){
-                String Str_Sql = "select * from JUsuarios where Estado ='descuento'";
+                String Str_Sql = "select * from JUsuarios where Estado ='descuento' and clave='"+Codigo+"'";
                 ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
                 if(Rs.next()){
                     String TValor ="";

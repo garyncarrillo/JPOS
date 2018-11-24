@@ -130,11 +130,11 @@ private void setNegro(PrintWriter pw) {
 
                     setFormato(1, ps);
                     ps.println("");
-                    ps.println("                ALMACEN FOR KIDS");
-                    ps.println("               Calle 22 No 17-48");
-                    ps.println("             Sabanalarga-Atlantico");
+                    ps.println("                    Innova Style");
+                    ps.println("               Calle 69 No 49-48");
+                    ps.println("             Barranquilla-Atlantico");
                     ps.println("                NIT :8.638.611-9" );
-                    ps.println("              Cels: 300-664-43-27 ");
+                    ps.println("              Cels: 313-599-92-23 ");
                     Dibuja_Linea(ps);
                     ps.println("Ticket    : 1 - 2" );
                     ps.println("S/N       : S");

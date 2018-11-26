@@ -181,8 +181,8 @@ private void setNegro(PrintWriter pw) {
                     ultimo += "                   " ;
                     ps.println(ultimo);
                     ps.println("                 CONSERVE SU FACTURA PARA ");
-                    ps.println("                     CUALQUIER CAMBIO ");
-                    ps.println("                  GRACIAS POR SU COMPRA          ");
+                    ps.println("                     CUALQUIER GARANTIA ");
+                    ps.println("                  GRACIAS POR VISITARNOS!!!    ");
                     ps.close();
                     this.correr(7, ps);
                }else{

@@ -24,13 +24,19 @@ class JConeccion {
                 //String db = getClass().getResource("/JBasePos.mdb").toString().substring(6, getClass().getResource("/JBasePos.mdb").toString().length());
                 db = "C:\\Factura\\JBasePos.mdb";
                 String OsDirectorio=System.getProperty("user.dir");
+               
+                //Driver ODBC
+                //String dns_base ="BASE";
+                //StrConnection = "Microsoft Access Driver (*.mdb, *.accdb)";
+                //StrConnection = "jdbc:odbc:MS Access Database;DBQ=" + dns_base;
                 
                 //Driver para 32 Bits
-                //StrConnection = "jdbc:odbc:MS Access Database;DBQ=" + db;
+                //StrConnection = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ="+db;
+                
                 //Driver para 64 Bits
                 StrConnection = "jdbc:odbc:Driver="
                               + "{Microsoft Access Driver (*.mdb, *.accdb)}; DBQ="+db;
-		DrvConnection = "sun.jdbc.odbc.JdbcOdbcDriver";
+                DrvConnection = "sun.jdbc.odbc.JdbcOdbcDriver";
 		Class.forName(DrvConnection).newInstance();
 		con  = DriverManager.getConnection(StrConnection,"","");
 	     }catch (Exception e){

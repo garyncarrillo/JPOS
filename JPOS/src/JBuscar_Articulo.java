@@ -42,6 +42,7 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
        Cabecera.add("Plu");
        Cabecera.add("Descripcion");
        Cabecera.add("Precio de Venta");
+       Cabecera.add("Marca");
        initComponents();
        jRadioButton1.setSelected(true);
        JFormato= new DecimalFormat(NumeroFormato);
@@ -58,6 +59,8 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
        Cabecera.add("Plu");
        Cabecera.add("Descripcion");
        Cabecera.add("Precio de Venta");
+       Cabecera.add("Descripcion Larga");
+       ;
        initComponents();
        jRadioButton1.setSelected(true);
        JFormato= new DecimalFormat(NumeroFormato);
@@ -94,7 +97,7 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Plu", "Descripcion", "Marca", "Precio Venta"
+                "Plu", "Descripcion", "Precio Venta", "Marca"
             }
         ));
         jScrollPane1.setViewportView(jTableBuscarArticulos);
@@ -153,19 +156,22 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
                         .addComponent(jButton2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jRadioButton1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioButton2)
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioButton3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioButton4))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(TxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton1)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jRadioButton1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jRadioButton2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jRadioButton3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jRadioButton4))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(TxtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton1)))
+                                .addGap(0, 29, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
@@ -311,8 +317,9 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
                this.Detalle = new Vector();
                this.Detalle.add(Rs.getString("Plu"));
                this.Detalle.add(Rs.getString("NombreLargo"));
-               this.Detalle.add(Rs.getString("NombreCorto"));
                this.Detalle.add( JFormato.format(Rs.getInt("PrecioVenta")));
+               this.Detalle.add(Rs.getString("NombreCorto"));
+               
                this.M_Detalle.add(this.Detalle);
                this.SwControlBusqueda = true;
            }

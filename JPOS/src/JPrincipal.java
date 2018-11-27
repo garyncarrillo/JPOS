@@ -49,6 +49,7 @@ public class JPrincipal extends javax.swing.JFrame {
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
         MAdministracion = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
         MReportes = new javax.swing.JMenu();
@@ -139,6 +140,14 @@ public class JPrincipal extends javax.swing.JFrame {
             }
         });
         MMaestros.add(jMenuItem4);
+
+        jMenuItem10.setText("Vendedores");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        MMaestros.add(jMenuItem10);
 
         jMenuBar1.add(MMaestros);
 
@@ -244,6 +253,14 @@ public class JPrincipal extends javax.swing.JFrame {
         this.repaint();
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+        JVendedores MVendedores = new JVendedores(this, this.JBase_Datos, this.Cn);
+        MVendedores.setVisible(true);
+        this.add(MVendedores);
+        this.repaint(); 
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
     @Override
     public Image getIconImage(){
        Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("resources/LogoPOS.png"));
@@ -299,6 +316,7 @@ public class JPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu MReportes;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

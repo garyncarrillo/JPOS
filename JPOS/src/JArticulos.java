@@ -190,13 +190,13 @@ public class JArticulos {
     public Vector getInventario(){
         try {
             String Str_Sql = "select * from JArticulos "
-                    + "order by plu";
+                    + "order by int(plu)";
             ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
             this.Inventario_Fila.clear();
             int DCantidad = 0;
             double TCantidad = 0;
             double DCosto = 0,  DVentaMin = 0,  DVentaMax = 0;
-            double TCosto = 0,  TVentaMin = 0,  TVentaMax = 0;
+            double TCosto = 0,  TVentaMin = 0,  TVentaMax = 0, TCosto_Un=0, TPrecioVenta_Un=0;
             boolean Sw = false;
             while(Rs.next()){
                     this.Detalle_Inventario = new Vector();
@@ -205,13 +205,17 @@ public class JArticulos {
                     DCantidad =  Rs.getInt("Cantidad");
                     TCantidad = TCantidad + DCantidad;
                     DCosto = Rs.getDouble("Costo");
+                    TCosto_Un = TCosto_Un + DCosto;
                     TCosto = TCosto +  (DCosto*DCantidad);
                     DVentaMin =  Rs.getDouble("PrecioVentaMin");
                     TVentaMin = TVentaMin +  (DVentaMin*DCantidad);
                     DVentaMax = Rs.getDouble("PrecioVenta");
+                    TPrecioVenta_Un = TPrecioVenta_Un+ DVentaMax;
                     TVentaMax = TVentaMax +  (DVentaMax*DCantidad);
                     this.Detalle_Inventario.add(DCantidad);
+                    this.Detalle_Inventario.add(this.JFormato.format(DCosto));
                     this.Detalle_Inventario.add(this.JFormato.format(DCosto*DCantidad));
+                    this.Detalle_Inventario.add(this.JFormato.format(DVentaMax));
                     this.Detalle_Inventario.add(this.JFormato.format(DVentaMin*DCantidad));
                     this.Detalle_Inventario.add(this.JFormato.format(DVentaMax*DCantidad));
                     this.Inventario_Fila.add(this.Detalle_Inventario);
@@ -222,7 +226,9 @@ public class JArticulos {
                     this.Detalle_Inventario.add("TOTAL");
                     this.Detalle_Inventario.add("->>>");
                     this.Detalle_Inventario.add(TCantidad);
+                    this.Detalle_Inventario.add(this.JFormato.format(TCosto_Un));
                     this.Detalle_Inventario.add(this.JFormato.format(TCosto));
+                    this.Detalle_Inventario.add(this.JFormato.format(TPrecioVenta_Un));
                     this.Detalle_Inventario.add(this.JFormato.format(TVentaMin));
                     this.Detalle_Inventario.add(this.JFormato.format(TVentaMax));
                     this.Inventario_Fila.add(this.Detalle_Inventario);

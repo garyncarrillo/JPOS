@@ -21,8 +21,8 @@ public class JMArticulos extends JInternalFrame {
      */
     private JConeccion JBase_Datos;
     private Connection Cn;
-    private JArticulos Articulo;
     private JPrincipal  Principal;
+    private JArticulos Articulo;
     private JBuscar_Articulo Fr_Articulo;
     
     
@@ -49,7 +49,9 @@ public class JMArticulos extends JInternalFrame {
        this.CabInventario.add("Plu");
        this.CabInventario.add("Nombre");
        this.CabInventario.add("Cantidad");
+       this.CabInventario.add("Costo Un");
        this.CabInventario.add("Costo");
+       this.CabInventario.add("Precio Venta Un");
        this.CabInventario.add("Precio Venta Min");
        this.CabInventario.add("Precio Venta Max");
        
@@ -96,6 +98,7 @@ public class JMArticulos extends JInternalFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jCEstado = new javax.swing.JComboBox();
+        jButton10 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jTFactura = new javax.swing.JTextField();
@@ -197,20 +200,26 @@ public class JMArticulos extends JInternalFrame {
 
         jCEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ACTIVO", "INACTIVO" }));
 
+        jButton10.setText("Nuevo");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(103, 103, 103)
-                .addComponent(jLabel3)
-                .addGap(80, 80, 80))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel1)
+                        .addGap(157, 157, 157)
+                        .addComponent(jLabel2)
+                        .addGap(110, 110, 110)
+                        .addComponent(jLabel3))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(293, 293, 293)
                         .addComponent(jLabel6)
@@ -268,8 +277,10 @@ public class JMArticulos extends JInternalFrame {
                         .addContainerGap()
                         .addComponent(jButton2)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)))
-                .addContainerGap(171, Short.MAX_VALUE))
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton10)))
+                .addContainerGap(337, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -316,7 +327,8 @@ public class JMArticulos extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jButton10))
                 .addGap(114, 114, 114))
         );
 
@@ -430,7 +442,7 @@ public class JMArticulos extends JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -545,7 +557,7 @@ public class JMArticulos extends JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -623,7 +635,7 @@ public class JMArticulos extends JInternalFrame {
                         .addComponent(jButton7)
                         .addGap(33, 33, 33)
                         .addComponent(jSaldoActual, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(183, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -651,7 +663,7 @@ public class JMArticulos extends JInternalFrame {
 
             },
             new String [] {
-                "Plu", "Nombre", "Cantidad", "Costo", "Precio Venta Min", "Precio Venta Max"
+                "Plu", "Nombre", "Cantidad", "Costo Un", "Costo", "Precio Venta Un", "Precio Venta Min", "Precio Venta Max"
             }
         ));
         jScrollPane2.setViewportView(jTInventario);
@@ -675,7 +687,7 @@ public class JMArticulos extends JInternalFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -831,6 +843,31 @@ public class JMArticulos extends JInternalFrame {
         // TODO add your handling code here:
         this.getInventario();
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+        nuevo_articulo();
+    }//GEN-LAST:event_jButton10ActionPerformed
+    
+    public void nuevo_articulo(){
+       jTCodigo.setText(""+get_Plu());
+    }
+    public int get_Plu(){
+        int Plu = 0;
+        try{
+            String Str_Sql= " SELECT max(int(plu)) as c_plu FROM JArticulos";
+            ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
+            
+            if(Rs.next()){
+               Plu = Rs.getInt("c_plu");
+            }
+            Plu = Plu+1;
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this,"get_Plu():Nuevo::articulo()"+e.getMessage());
+        }
+        return Plu;
+    }
+    
     public void Cargar_Movimiento_Consulta(){
         try {
             jTbMovimientos.setModel(new javax.swing.table.DefaultTableModel(this.Detalla_Fila,this.Cabecera_Consulta));
@@ -991,6 +1028,8 @@ public class JMArticulos extends JInternalFrame {
         jTInventario.getColumnModel().getColumn(3).setPreferredWidth(50);
         jTInventario.getColumnModel().getColumn(4).setPreferredWidth(50);
         jTInventario.getColumnModel().getColumn(5).setPreferredWidth(50);
+        jTInventario.getColumnModel().getColumn(6).setPreferredWidth(50);
+        jTInventario.getColumnModel().getColumn(6).setPreferredWidth(50);
     }
     
     /**
@@ -1037,6 +1076,7 @@ public class JMArticulos extends JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

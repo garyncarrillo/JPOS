@@ -31,3 +31,5 @@ Version 2.11.27
   Apellidos Type Texto
   Telefono Type Texto
   Direccion Type Texto
+
+6- Adicion del campo IdVendedora  en la tabla JCabFactura

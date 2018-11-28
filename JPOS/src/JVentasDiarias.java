@@ -32,6 +32,10 @@ public class JVentasDiarias extends JInternalFrame{
     private DecimalFormat JFormato ;
     private JArticulos Articulo;
     
+    private Vector Comision_Cab;
+    private Vector Comision_Det;
+    private Vector Comision_Fila;
+    
     /**
      * Creates new form JVentasDiarias
      */
@@ -41,7 +45,16 @@ public class JVentasDiarias extends JInternalFrame{
         this.Articulo = new JArticulos(this.JBase_Datos, this.Cn);
         this.Cabecera = new Vector();
         this.Detalle = new Vector();
+        Comision_Cab = new Vector();
+        Comision_Det = new Vector();
+        this.Comision_Fila = new Vector();
         JFormato= new DecimalFormat(NumeroFormato);
+        
+        this.Comision_Cab.add("Vendedor");
+        this.Comision_Cab.add("Comision-Costo");
+        this.Comision_Cab.add("Precio de Venta");
+        
+        
         this.Cabecera.add("Num Factura");
         this.Cabecera.add("Fecha");
         this.Cabecera.add("Total Iva");
@@ -136,10 +149,24 @@ public class JVentasDiarias extends JInternalFrame{
     public void  getVentas_Dia(String Fecha, String Fecha2, int Tipo){
         try {
            String Str_Sql="";
+           String Str_Sql_Comision ="";
            if(Tipo==1){
             Str_Sql = "select Numero,Fecha,TotalIva,TotalOtroImpuesto,Descuento,TotaPagar,CodigoMedio from JCabFactura where fecha='"+Fecha+"' and Estado ='C' ";
+            
+            Str_Sql_Comision = "SELECT IdVendedora , sum(Costo*Cantidad) as C_Costo ,  sum(PrecioUnitario*Cantidad) as C_PrecioVenta  FROM ( " +
+                    "       SELECT idVendedora , T2.Plu,  NombreLargo,T2.Cantidad, T2.PrecioUnitario, Costo " +
+                    "       FROM JCabFactura as T1 , JDetFactura as T2 , JArticulos as T3 " +
+                    "       Where T1.Numero=T2.Numero AND T2.Plu=T3.Plu " +
+                    "       and fecha='"+Fecha+"' and T1.Estado ='C' "+
+                    "      ) as T1 " +
+                    " group by idVendedora";
            }else{
                Str_Sql = "select Numero,Fecha,TotalIva,TotalOtroImpuesto,Descuento,TotaPagar,CodigoMedio from JCabFactura where fecha>='"+Fecha+"' and fecha <='"+Fecha2+"' and Estado ='C'";
+               
+               Str_Sql_Comision = "SELECT idVendedora ,  T2.Plu, T2.Cantidad, T2.PrecioUnitario, Costo " +
+                               " FROM JCabFactura as T1 , JDetFactura as T2 , JArticulos as T3 " +
+                               " Where T1.Numero=T2.Numero AND T2.Plu=T3.Plu " +
+                               " fecha>='"+Fecha+"' and fecha <='"+Fecha2+"' and Estado ='C'";
            }
            ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
            this.Detalle.clear();
@@ -163,6 +190,25 @@ public class JVentasDiarias extends JInternalFrame{
                 this.M_Detalle.add(Rs.getString("CodigoMedio"));
                 this.Detalle.add(M_Detalle);
            }  
+           
+           
+           // Version 2.11.28 adicion de comision
+           //System.out.println(" "+Str_Sql_Comision);
+           ResultSet Result_comision =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql_Comision);
+           this.Comision_Fila.clear();
+           double C_Total_Costo = 0 , C_Total_Venta = 0;
+           while(Result_comision.next()){
+               this.Comision_Det= new Vector();
+               this.Comision_Det.add(Result_comision.getString("idVendedora"));
+               double tmp_costo = Result_comision.getDouble("C_Costo");
+               double tmp_venta =  Result_comision.getDouble("C_PrecioVenta");
+               C_Total_Costo =  C_Total_Costo + tmp_costo;
+               C_Total_Venta = C_Total_Venta + tmp_venta;
+               this.Comision_Det.add(JFormato.format(tmp_costo));
+               this.Comision_Det.add(JFormato.format(tmp_venta));
+               this.Comision_Fila.add(this.Comision_Det);
+           }
+           
            if(TPagar!= 0){
                 this.M_Detalle = new Vector();
                 this.M_Detalle.add("Total");
@@ -172,9 +218,18 @@ public class JVentasDiarias extends JInternalFrame{
                 this.M_Detalle.add(JFormato.format(TDescuento));
                 this.M_Detalle.add(JFormato.format(TPagar));
                 this.Detalle.add(M_Detalle);
+                
+                // adicion de tabla de comision 
+               this.Comision_Det= new Vector();
+               this.Comision_Det.add("Total --->>  ");
+               this.Comision_Det.add(JFormato.format(C_Total_Costo));
+               this.Comision_Det.add(JFormato.format(C_Total_Venta));
+               this.Comision_Fila.add(this.Comision_Det);
+                
            }
            if(Tipo==1){
                 jFacturas.setModel(new javax.swing.table.DefaultTableModel(this.Detalle, Cabecera));
+                jTComision.setModel(new javax.swing.table.DefaultTableModel(this.Comision_Fila, this.Comision_Cab));
            }else{
                jFactura2.setModel(new javax.swing.table.DefaultTableModel(this.Detalle, Cabecera));
            }
@@ -199,6 +254,8 @@ public class JVentasDiarias extends JInternalFrame{
         jCFechas = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jFacturas = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTComision = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jTFechaInicial = new javax.swing.JTextField();
@@ -211,6 +268,7 @@ public class JVentasDiarias extends JInternalFrame{
         jTFechaInicial1 = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         JTUtillidad = new javax.swing.JTable();
+        jButton4 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -237,30 +295,43 @@ public class JVentasDiarias extends JInternalFrame{
         ));
         jScrollPane1.setViewportView(jFacturas);
 
+        jTComision.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vendedor", "Comision-Costo", "Precio de Venta"
+            }
+        ));
+        jScrollPane4.setViewportView(jTComision);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jCFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
+                        .addGap(35, 35, 35)
                         .addComponent(jButton1))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1068, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(47, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCFechas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addGap(26, 26, 26)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Por Fecha", jPanel1);
@@ -363,6 +434,13 @@ public class JVentasDiarias extends JInternalFrame{
 
         jTabbedPane1.addTab("Rango de Fechas Utilidad", jPanel3);
 
+        jButton4.setText("Ver");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Ejecutar");
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
@@ -384,7 +462,11 @@ public class JVentasDiarias extends JInternalFrame{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jButton4))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -392,7 +474,9 @@ public class JVentasDiarias extends JInternalFrame{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton4)
+                .addContainerGap())
         );
 
         pack();
@@ -426,6 +510,14 @@ public class JVentasDiarias extends JInternalFrame{
         }
                  
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        String P_Id_Vendedor = jTComision.getValueAt(jTComision.getSelectedRow(),0).toString().trim();
+        String P_Fecha = jCFechas.getSelectedItem().toString().trim();
+        JDetalle_x_Vendedora Frm_JDetalle_x_Vendedora = new JDetalle_x_Vendedora(this.JBase_Datos, this.Cn ,P_Id_Vendedor, P_Fecha);
+        Frm_JDetalle_x_Vendedora.setVisible(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -473,6 +565,7 @@ public class JVentasDiarias extends JInternalFrame{
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JComboBox jCFechas;
     private javax.swing.JTable jFactura2;
     private javax.swing.JTable jFacturas;
@@ -486,6 +579,8 @@ public class JVentasDiarias extends JInternalFrame{
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTComision;
     private javax.swing.JTextField jTFechaFinal;
     private javax.swing.JTextField jTFechaFinal1;
     private javax.swing.JTextField jTFechaInicial;

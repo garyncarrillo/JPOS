@@ -1057,8 +1057,8 @@ public class JFacturacion  extends JInternalFrame{
             String Str_Sql= "Select * from JCabFactura where Numero ='"+TxtNoFactura.getText().trim()+"'";
             ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
             if(!Rs.next()){
-               Str_Sql = "Insert into JCabFactura (Numero,Fecha,Hora,CodigoCentoCosto,CodigoCajero,TotalIva,TotalOtroImpuesto,TotaPagar,CodigoMedio,Saldo_Plan_Separe,Descuento,Estado) VALUES "
-                        + "('"+this.TxtNoFactura.getText().trim()+"','"+JTxtFecha.getText().trim()+"','"+this.getHoraActual()+"','"+this.CentroVenta.getCodigoCentroCosto().trim()+"','"+this.Caja.getCodigoCajeros().trim()+"', "+this.AcomuladoIva+","+this.AcomuladoOtroImpuesto+","+this.AcomuladoTotal_Pagar+",'"+ "Codigo Medio ',"+this.Acomulado_Plan_Separe+","+this.Valor_Descuento_General+",'C') ";
+               Str_Sql = "Insert into JCabFactura (Numero,Fecha,Hora,CodigoCentoCosto,CodigoCajero,TotalIva,TotalOtroImpuesto,TotaPagar,CodigoMedio,Saldo_Plan_Separe,Descuento,IdVendedora,Estado) VALUES "
+                        + "('"+this.TxtNoFactura.getText().trim()+"','"+JTxtFecha.getText().trim()+"','"+this.getHoraActual()+"','"+this.CentroVenta.getCodigoCentroCosto().trim()+"','"+this.Caja.getCodigoCajeros().trim()+"', "+this.AcomuladoIva+","+this.AcomuladoOtroImpuesto+","+this.AcomuladoTotal_Pagar+",'"+ "Codigo Medio ',"+this.Acomulado_Plan_Separe+","+this.Valor_Descuento_General+",'"+jCVendedoras.getSelectedItem().toString().trim()+"','C') ";
             }
             else{
                 Str_Sql = "update  JCabFactura "
@@ -1072,6 +1072,7 @@ public class JFacturacion  extends JInternalFrame{
                         + " ,CodigoMedio='Medio'"
                         + " ,Saldo_Plan_Separe="+this.Acomulado_Plan_Separe
                         + ", Descuento = "+this.Valor_Descuento_General
+                        +" , IdVendedora='"+jCVendedoras.getSelectedItem().toString().trim()+"' "
                         + " where Numero ='"+TxtNoFactura.getText().trim()+"'";
             }
             

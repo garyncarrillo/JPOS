@@ -48,6 +48,10 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
        JFormato= new DecimalFormat(NumeroFormato);
        SwControlBusqueda= false;
     }
+    
+
+    
+    
     public JBuscar_Articulo(JConeccion JBase_Datos3, Connection Cn2, JMArticulos MArticulos, String Tipo) {
        this.Maestro_Articulos = MArticulos;
        this.TipoMovimiento = Tipo;
@@ -242,6 +246,23 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public void Buscar_Articulo(int Plu){
+        try {
+            String Str_Sql=" select * from JArticulos where Plu='"+Plu+"'";
+            ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
+            if(Rs.next()){
+                
+                //(int plu, String NombreLargo, String Nombre, String CodigoBarra, String Catgoria, String Ubicacion, double Costo,
+                     //double Precio_min , double precio_max, double iva, double Otro_imp, String Estado)
+                this.Maestro_Articulos.set_Modificacion(Plu,Rs.getString("NombreLargo"),Rs.getString("NombreCorto"), Rs.getString("CodigoBarra"),Rs.getString("Categoria"),Rs.getString("Ubicacion"),Rs.getInt("Costo"),Rs.getInt("PrecioVentaMin"),Rs.getInt("PrecioVenta"),Rs.getInt("PorCentajeIva"),Rs.getInt("PorcentajeOtroImpuesto"),Rs.getString("Estado"));
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this," Buscar_Articulo() "+e.getMessage());
+        }
+    }
+    
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         if(this.Frm!= null){
@@ -266,6 +287,9 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
                 }
                 if(this.TipoMovimiento.equals("C")){
                     this.Maestro_Articulos.setPluArtuculoConsulta(""+Plu);
+                }
+                if(this.TipoMovimiento.equals("U_A")){
+                    this.Buscar_Articulo(Plu);
                 }
                 this.Maestro_Articulos.repaint();
                 this.dispose();
@@ -366,7 +390,7 @@ public class JBuscar_Articulo extends javax.swing.JDialog {
 
             @Override
             public void run() {
-                new JBuscar_Articulo(null, null, null).setVisible(true);
+                new JBuscar_Articulo(null, null, null,null).setVisible(true);
             }
         });
     }

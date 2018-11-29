@@ -159,6 +159,7 @@ public class JMArticulos extends JInternalFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 102, 102));
         jLabel1.setText("Codigo");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -166,6 +167,12 @@ public class JMArticulos extends JInternalFrame {
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Nombre Corto");
+
+        jTCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTCodigoKeyPressed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setText("Codigo de Barra");
@@ -848,6 +855,17 @@ public class JMArticulos extends JInternalFrame {
         // TODO add your handling code here:
         nuevo_articulo();
     }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jTCodigoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTCodigoKeyPressed
+        // TODO add your handling code here:
+        
+        // Version 2.11.27
+        if (evt.getKeyCode()==115){
+           JBuscar_Articulo Fr_Articulo = new JBuscar_Articulo(this.JBase_Datos, this.Cn, this, "U_A");
+           Fr_Articulo.setBounds(30,80, 500, 310);
+           Fr_Articulo.setVisible(true);
+        }
+    }//GEN-LAST:event_jTCodigoKeyPressed
     
     public void nuevo_articulo(){
        jTCodigo.setText(""+get_Plu());
@@ -985,6 +1003,19 @@ public class JMArticulos extends JInternalFrame {
     public void setPluArtuculoConsulta(String Plu){
         this.jTArticulo.setText(Plu.trim());
     }
+    
+    public void set_Modificacion(int plu, String NombreLargo, String Nombre, String CodigoBarra, String Catgoria, String Ubicacion, double Costo,
+            double Precio_min , double precio_max, double iva, double Otro_imp, String Estado){
+        this.jTCodigo.setText(""+plu);
+        this.jTNombreLargo.setText(NombreLargo);
+        this.jTNombreCorto.setText(Nombre);
+        this.jTCodigoBarra.setText(CodigoBarra);
+        this.jTCosto.setText(""+Costo);
+        this.jTPrecioMinimo.setText(""+Precio_min);
+        this.jTPrecioMax.setText(""+precio_max);
+    }
+    
+    
     public void setUbicacion(){
         try {
            String Str_Sql = "select Codigo from JDetalleEtc where CodigoEtc = 'UBIC_PLU'"; 

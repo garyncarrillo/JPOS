@@ -160,13 +160,18 @@ public class JVentasDiarias extends JInternalFrame{
                     "       and fecha='"+Fecha+"' and T1.Estado ='C' "+
                     "      ) as T1 " +
                     " group by idVendedora";
+               System.out.println(""+ Str_Sql_Comision);
            }else{
                Str_Sql = "select Numero,Fecha,TotalIva,TotalOtroImpuesto,Descuento,TotaPagar,CodigoMedio from JCabFactura where fecha>='"+Fecha+"' and fecha <='"+Fecha2+"' and Estado ='C'";
                
-               Str_Sql_Comision = "SELECT idVendedora ,  T2.Plu, T2.Cantidad, T2.PrecioUnitario, Costo " +
-                               " FROM JCabFactura as T1 , JDetFactura as T2 , JArticulos as T3 " +
-                               " Where T1.Numero=T2.Numero AND T2.Plu=T3.Plu " +
-                               " fecha>='"+Fecha+"' and fecha <='"+Fecha2+"' and Estado ='C'";
+               Str_Sql_Comision = 
+                       "SELECT IdVendedora , sum(Costo*Cantidad) as C_Costo ,  sum(PrecioUnitario*Cantidad) as C_PrecioVenta  FROM (        "
+                       + " SELECT idVendedora , T2.Plu,  NombreLargo,T2.Cantidad, T2.PrecioUnitario, Costo        "
+                       + " FROM JCabFactura as T1 , JDetFactura as T2 , JArticulos as T3       "
+                       + " Where T1.Numero=T2.Numero AND T2.Plu=T3.Plu  "+
+                         " and  fecha>='"+Fecha+"' and fecha <='"+Fecha2+"' "
+                       + " and T1.Estado ='C'       ) as T1  group by idVendedora";
+               System.out.println(""+Str_Sql_Comision);
            }
            ResultSet Rs =  JBase_Datos.SQL_QRY(this.Cn,Str_Sql);
            this.Detalle.clear();
@@ -232,6 +237,7 @@ public class JVentasDiarias extends JInternalFrame{
                 jTComision.setModel(new javax.swing.table.DefaultTableModel(this.Comision_Fila, this.Comision_Cab));
            }else{
                jFactura2.setModel(new javax.swing.table.DefaultTableModel(this.Detalle, Cabecera));
+               jTComision1.setModel(new javax.swing.table.DefaultTableModel(this.Comision_Fila, this.Comision_Cab));
            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,"Cargar_Fecha "+e.getMessage());
@@ -262,6 +268,8 @@ public class JVentasDiarias extends JInternalFrame{
         jTFechaFinal = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jFactura2 = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTComision1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         jTFechaFinal1 = new javax.swing.JTextField();
@@ -328,10 +336,10 @@ public class JVentasDiarias extends JInternalFrame{
                     .addComponent(jCFechas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Por Fecha", jPanel1);
@@ -354,6 +362,16 @@ public class JVentasDiarias extends JInternalFrame{
         ));
         jScrollPane2.setViewportView(jFactura2);
 
+        jTComision1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vendedor", "Comision-Costo", "Precio de Venta"
+            }
+        ));
+        jScrollPane5.setViewportView(jTComision1);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -362,13 +380,17 @@ public class JVentasDiarias extends JInternalFrame{
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTFechaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(jTFechaFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(jButton2))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1089, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(26, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jTFechaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(36, 36, 36)
+                                .addComponent(jTFechaFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(jButton2))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1089, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 27, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -379,8 +401,10 @@ public class JVentasDiarias extends JInternalFrame{
                     .addComponent(jTFechaInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Rango de Fechas", jPanel2);
@@ -429,7 +453,7 @@ public class JVentasDiarias extends JInternalFrame{
                     .addComponent(jButton3))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Rango de Fechas Utilidad", jPanel3);
@@ -473,7 +497,7 @@ public class JVentasDiarias extends JInternalFrame{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton4)
                 .addContainerGap())
@@ -580,7 +604,9 @@ public class JVentasDiarias extends JInternalFrame{
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTComision;
+    private javax.swing.JTable jTComision1;
     private javax.swing.JTextField jTFechaFinal;
     private javax.swing.JTextField jTFechaFinal1;
     private javax.swing.JTextField jTFechaInicial;
